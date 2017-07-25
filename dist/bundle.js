@@ -80,7 +80,7 @@ var countiesMap = Highcharts.geojson(Highcharts.maps['countries/us/us-all-all'])
 
 // Add state acronym for tooltip
 Highcharts.each(countiesMap, function (mapPoint) {
-    mapPoint.name = mapPoint.name + ', ' + mapPoint.properties['hc-key'].substr(3, 2);
+    mapPoint.name = mapPoint.name + ', ' + mapPoint.properties['hc-key'].substr(3, 2).toUpperCase();
 });
 
 options = {
@@ -88,15 +88,52 @@ options = {
         borderWidth: 1,
         marginRight: 50 // for the legend
     },
-
+	
+	legend: {
+            title: {
+                text: 'Members',
+                style: {
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'black'
+                }
+            },
+            layout: 'vertical',
+            align: 'right',
+            floating: true,
+            valueDecimals: 0,
+            valueSuffix: '',
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || 'rgba(255, 255, 255, 0.85)',
+            symbolRadius: 0,
+            symbolHeight: 14
+        },
+		
     title: {
-        text: 'US Counties'
+        text: 'SAR Mid Atlantic States Membership'
     },
 
     mapNavigation: {
         enabled: true
     },
 
+	colorAxis: {
+            dataClasses: [{
+                from: 0,
+                to: 25,
+                color: "#00cc00"
+            }, {
+                from: 25,
+                to: 50,
+                color: "#FFD700"
+            }, {
+                from: 50,
+                to: 75,
+                color: "#FF8C00"
+            }, {
+                from: 75,
+                to: 100,
+                color: "#B22222"
+            }]
+        },
+	
     plotOptions: {
         mapline: {
             showInLegend: false,
@@ -109,9 +146,9 @@ options = {
             mapData: countiesMap,
             data: __WEBPACK_IMPORTED_MODULE_0__data_json___default.a,
             joinBy: ['hc-key', 'code'],
-            name: '',
+            name: 'Membership Rate',
             tooltip: {
-                valueSuffix: '%'
+                valueSuffix: ''
             },
             borderWidth: 0.5,
             states: {
