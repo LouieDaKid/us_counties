@@ -11,3 +11,106 @@
 
 <!-- -->
 <script src="dist/bundle.js"></script>
+
+<script>
+<!--$.getJSON('/countymap.js', function (data) {-->
+$.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=us-counties-unemployment.json&callback=?', function (data) {
+
+    var countiesMap = Highcharts.geojson(Highcharts.maps['countries/us/us-all-all']),
+        lines = Highcharts.geojson(Highcharts.maps['countries/us/us-all-all'], 'mapline'),
+        options;
+
+    // Add state acronym for tooltip
+    Highcharts.each(countiesMap, function (mapPoint) {
+        mapPoint.name = mapPoint.name + ', ' + mapPoint.properties['hc-key'].substr(3, 2).toUpperCase();;
+    });
+	
+    options = {
+        chart: {
+            borderWidth: 1,
+            marginRight: 50 // for the legend
+        },
+
+        title: {
+            text: 'SAR Mid Atlantic States Membership'
+        },
+
+        legend: {
+            title: {
+                text: 'Members',
+                style: {
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'black'
+                }
+            },
+            layout: 'vertical',
+            align: 'right',
+            floating: true,
+            valueDecimals: 0,
+            valueSuffix: '',
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || 'rgba(255, 255, 255, 0.85)',
+            symbolRadius: 0,
+            symbolHeight: 14
+        },
+
+        mapNavigation: {
+            enabled: true
+        },
+
+        colorAxis: {
+            dataClasses: [{
+                from: 0,
+                to: 25,
+                color: "#00cc00"
+            }, {
+                from: 25,
+                to: 50,
+                color: "#FFD700"
+            }, {
+                from: 50,
+                to: 75,
+                color: "#FF8C00"
+            }, {
+                from: 75,
+                to: 100,
+                color: "#B22222"
+            }]
+        },
+		
+        plotOptions: {
+            mapline: {
+                showInLegend: false,
+                enableMouseTracking: false
+            }
+        },
+
+        series: [{
+            mapData: countiesMap,
+            data: data,
+            joinBy: ['hc-key', 'code'],
+            name: 'Membership Rate',
+            tooltip: {
+                valueSuffix: '%'
+            },
+            borderWidth: 0.5,
+            states: {
+                hover: {
+                    color: '#a4edba'
+                }
+            }
+        }, {
+            type: 'mapline',
+            name: 'State borders',
+            data: [lines[0]],
+            color: 'white'
+        }, {
+            type: 'mapline',
+            name: 'Separator',
+            data: [lines[1]],
+            color: 'gray'
+        }]
+    };
+
+    // Instanciate the map
+    $('#container').highcharts('Map', options);
+});
+</script>
